@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Incident List | Incident Handoff</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#ffdbd1",
+                      "primary-container": "#b15f00",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed-variant": "#842503",
+                      "on-primary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container": "#f4ede6",
+                      "on-secondary-container": "#6a635e",
+                      "surface": "#fff8f2",
+                      "on-error-container": "#93000a",
+                      "secondary-container": "#eae1da",
+                      "surface-tint": "#904d00",
+                      "on-tertiary-container": "#fffbff",
+                      "tertiary-container": "#c2512d",
+                      "surface-variant": "#e8e1db",
+                      "inverse-primary": "#ffb77d",
+                      "on-tertiary-fixed": "#3a0a00",
+                      "error-container": "#ffdad6",
+                      "inverse-on-surface": "#f7efe9",
+                      "on-primary-fixed": "#2f1500",
+                      "background": "#fff8f2",
+                      "secondary-fixed": "#eae1da",
+                      "on-secondary": "#ffffff",
+                      "surface-container-low": "#faf2eb",
+                      "inverse-surface": "#33302c",
+                      "on-surface": "#1e1b17",
+                      "primary-fixed": "#ffdcc3",
+                      "on-background": "#1e1b17",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed": "#1f1b17",
+                      "surface-dim": "#e0d9d2",
+                      "surface-container-highest": "#e8e1db",
+                      "tertiary-fixed-dim": "#ffb59f",
+                      "on-surface-variant": "#554336",
+                      "primary": "#8d4b00",
+                      "outline-variant": "#dbc2b0",
+                      "primary-fixed-dim": "#ffb77d",
+                      "on-secondary-fixed-variant": "#4b4641",
+                      "on-error": "#ffffff",
+                      "secondary": "#645d58",
+                      "tertiary": "#a23917",
+                      "secondary-fixed-dim": "#cec5bf",
+                      "surface-container-high": "#eee7e0",
+                      "outline": "#887364",
+                      "on-primary-container": "#fffbff",
+                      "surface-bright": "#fff8f2",
+                      "on-primary-fixed-variant": "#6e3900"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Manrope"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #dbc2b0; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-6 h-screen w-64 bg-[#faf2eb] dark:bg-stone-900 border-r-0 z-50">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h1 class="text-xl font-bold text-[#1e1b17] dark:text-stone-100 font-headline leading-tight">Incident Handoff</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant opacity-70">The Serene Sentinel</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#645d58] dark:text-stone-400 hover:bg-[#e8e1db] dark:hover:bg-stone-800 transition-colors duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-inter text-sm tracking-wider">Dashboard</span>
+</a>
+<!-- Active Tab: Incidents -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#8d4b00] dark:text-amber-500 font-bold border-r-4 border-[#8d4b00] dark:border-amber-500 bg-[#e8e1db] dark:bg-stone-800 transition-colors duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+<span class="font-inter text-sm tracking-wider">Incidents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#645d58] dark:text-stone-400 hover:bg-[#e8e1db] dark:hover:bg-stone-800 transition-colors duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-inter text-sm tracking-wider">Admin</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#645d58] dark:text-stone-400 hover:bg-[#e8e1db] dark:hover:bg-stone-800 transition-colors duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-inter text-sm tracking-wider">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full py-4 px-4 rounded-xl bg-gradient-to-br from-primary to-primary-container text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span>New Incident</span>
+</button>
+<div class="mt-8 flex items-center gap-3 p-2 bg-surface-container rounded-xl">
+<img alt="User profile photo" class="w-10 h-10 rounded-lg object-cover" data-alt="professional portrait of a system administrator in a modern office with warm lighting and a blurred digital screen background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBilGpHWCVWoQzGRiUBI1qADR4cvztvc--sAy9KP00qxzIJDnEdniKGzvLOm_-pOmGbB5nnVzWQIv9kiwfj-GB8v78bNDuU-jgTdX4P8PR7Yq4OWB8rdG4rogmSMLFlWoS_MBCm1LdwJoqsNL1BjrQzrwkoM9Ux9LgZd4Wu5CLBrGCM0DoWzmUv70B-9oGmbWMWdXtbhib-ZI9oBqEZ2kJIwPu_Ocx8Qa21KyZEKXj8XnT0GNezxDB_GqwMBuDKtod32BJhWfpg0W23"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate">Alex Chen</p>
+<p class="text-[10px] text-on-surface-variant truncate">Lead Responder</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 z-40 flex justify-between items-center px-8 h-16 ml-64 max-w-[calc(100%-16rem)] bg-[#fff8f2]/80 dark:bg-stone-950/80 backdrop-blur-md shadow-sm dark:shadow-none transition-all cubic-bezier(0.4,0,0.2,1) w-full">
+<div class="flex items-center gap-8">
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-[#645d58] dark:text-stone-400 font-headline text-sm tracking-tight hover:text-[#8d4b00] transition-all" href="#">Timeline</a>
+<a class="text-[#645d58] dark:text-stone-400 font-headline text-sm tracking-tight hover:text-[#8d4b00] transition-all" href="#">Attachments</a>
+<a class="text-[#8d4b00] dark:text-amber-500 border-b-2 border-[#8d4b00] pb-1 font-headline text-sm tracking-tight" href="#">AI Summary</a>
+<a class="text-[#645d58] dark:text-stone-400 font-headline text-sm tracking-tight hover:text-[#8d4b00] transition-all" href="#">Comments</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-sm" data-icon="search">search</span>
+<input class="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm w-64 focus:ring-2 focus:ring-primary focus:bg-white transition-all" placeholder="Search incidents..." type="text"/>
+</div>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-16 p-8 min-h-screen">
+<div class="max-w-7xl mx-auto">
+<!-- Page Header & Hero Section -->
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h2 class="text-4xl font-extrabold text-on-surface font-headline tracking-tight mb-2">Incidents Explorer</h2>
+<p class="text-on-surface-variant max-w-xl">Active surveillance of system health. Browse, filter, and drill down into historical and active handoffs.</p>
+</div>
+<div class="flex gap-3">
+<div class="bg-surface-container-highest p-4 rounded-xl flex items-center gap-4 shadow-sm">
+<div class="text-right">
+<p class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Active Now</p>
+<p class="text-2xl font-black text-primary leading-none">04</p>
+</div>
+<div class="w-1 h-10 bg-primary/20 rounded-full"></div>
+<div class="text-right">
+<p class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Total (24h)</p>
+<p class="text-2xl font-black text-on-surface leading-none">12</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="bg-surface-container-low rounded-2xl p-4 mb-8 flex flex-wrap items-center gap-4">
+<div class="flex-1 min-w-[300px] relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-white border-none rounded-xl py-3 pl-12 pr-4 text-sm focus:ring-2 focus:ring-primary" placeholder="Search by title, incident ID, or keyword..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest px-2">Severity</label>
+<select class="bg-white border-none rounded-xl py-3 px-4 text-sm focus:ring-2 focus:ring-primary cursor-pointer min-w-[140px]">
+<option>All Severities</option>
+<option>SEV1 - Critical</option>
+<option>SEV2 - High</option>
+<option>SEV3 - Medium</option>
+<option>SEV4 - Low</option>
+</select>
+</div>
+<div class="flex items-center gap-2">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest px-2">Status</label>
+<select class="bg-white border-none rounded-xl py-3 px-4 text-sm focus:ring-2 focus:ring-primary cursor-pointer min-w-[140px]">
+<option>All Statuses</option>
+<option>detected</option>
+<option>acknowledged</option>
+<option>mitigating</option>
+<option>resolved</option>
+<option>postmortem</option>
+</select>
+</div>
+<button class="bg-surface-container-high hover:bg-surface-container-highest p-3 rounded-xl transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="tune">tune</span>
+</button>
+</div>
+<!-- Table Container (Editorial Bento Card) -->
+<div class="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-on-surface-variant/5">
+<div class="overflow-x-auto">
+<table class="w-full border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="text-left py-6 px-8 text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant">Title &amp; Incident ID</th>
+<th class="text-left py-6 px-4 text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant">Severity</th>
+<th class="text-left py-6 px-4 text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant">Status</th>
+<th class="text-left py-6 px-4 text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant">Commander</th>
+<th class="text-left py-6 px-4 text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant">Created Date</th>
+<th class="py-6 px-8"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="py-6 px-8">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface group-hover:text-primary transition-colors">Checkout Service Latency Spike</span>
+<span class="text-xs text-on-surface-variant/70 font-mono">INC-2023-442</span>
+</div>
+</td>
+<td class="py-6 px-4">
+<span class="px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-black tracking-tighter">SEV1</span>
+</td>
+<td class="py-6 px-4">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center gap-1.5 w-fit">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                        mitigating
+                                    </span>
+</td>
+<td class="py-6 px-4">
+<div class="flex items-center gap-2">
+<img alt="Commander profile" class="w-6 h-6 rounded-full" data-alt="close-up portrait of a tech professional with glasses and a friendly expression, soft office lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFSj90DimS17Xf9w_xf30XHei5OzzI7m5OI4lG2VH0KDlxO-Mioy0UCg9q56juJE8JdKJb7Smi_XvFKi1KK6q-olAlbTzTC7WPB2UUPjCt2QjtrP7BT_BFlVM3a8Wmmnc5ecuhzf_omGAFX17LiGWV5JaNHnDq45O_Z1aWHT5bcx8f24RAkIP54L5VGOjbTnh_kI31NIO8_6ytYJQQnkVYoNOX5U1rLg5Gpx4wnWw5JMNBBiyBE7djdAtk4-vAIeHRqRDfO_IHEFIh"/>
+<span class="text-sm font-medium">Jordan Smith</span>
+</div>
+</td>
+<td class="py-6 px-4">
+<span class="text-sm text-on-surface-variant">Oct 24, 14:20</span>
+</td>
+<td class="py-6 px-8 text-right">
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity" data-icon="chevron_right">chevron_right</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="py-6 px-8">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface group-hover:text-primary transition-colors">DB Migration Timeout: EU-WEST-1</span>
+<span class="text-xs text-on-surface-variant/70 font-mono">INC-2023-441</span>
+</div>
+</td>
+<td class="py-6 px-4">
+<span class="px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-black tracking-tighter">SEV2</span>
+</td>
+<td class="py-6 px-4">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold flex items-center gap-1.5 w-fit">
+                                        acknowledged
+                                    </span>
+</td>
+<td class="py-6 px-4">
+<div class="flex items-center gap-2">
+<img alt="Commander profile" class="w-6 h-6 rounded-full" data-alt="professional woman in a creative workspace with warm afternoon sunbeams and greenery in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhJdI5dEHvzczd4rgFqBsBgYrTe7jhwDjya0HDc3knnyToHFLqA8JBgZeueiCUmg50j6LEKBuGdwwh8SaHoEZghNJupCzdFPcKSgd3mjrMfFvJd3DfpuGaLX8d0P6WtLY3RwYOtnkUI37R8fFrPOc19qwkgCaanerER5V_tOPoBqgeWB4EW8jA8jqOJRtDr1u833PDLaQ_EcEbilpMKFrVIE1nfeEtrYE-Jt89waW9uTxcGdjIxnrfldnIGKsMBqIYqgwFJgY5bLJf"/>
+<span class="text-sm font-medium">Sarah Jenkins</span>
+</div>
+</td>
+<td class="py-6 px-4">
+<span class="text-sm text-on-surface-variant">Oct 24, 09:15</span>
+</td>
+<td class="py-6 px-8 text-right">
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity" data-icon="chevron_right">chevron_right</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="py-6 px-8">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface group-hover:text-primary transition-colors">Auth Token Expiry Edge Case</span>
+<span class="text-xs text-on-surface-variant/70 font-mono">INC-2023-439</span>
+</div>
+</td>
+<td class="py-6 px-4">
+<span class="px-3 py-1 rounded-full bg-surface-container-highest text-on-surface-variant text-[10px] font-black tracking-tighter">SEV3</span>
+</td>
+<td class="py-6 px-4">
+<span class="px-3 py-1 rounded-full bg-green-100 text-green-800 text-[10px] font-bold flex items-center gap-1.5 w-fit">
+                                        resolved
+                                    </span>
+</td>
+<td class="py-6 px-4">
+<div class="flex items-center gap-2">
+<img alt="Commander profile" class="w-6 h-6 rounded-full" data-alt="young male developer in a focused environment with soft blue screen light reflecting on his face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFfwjosAOam8IebS7ltPnu1AesjgUFVnludta36Rdg3Obm7E25wZu6gEL57k8iab7e5El2f1whXMShIWZUHi6m5t5SFSZPA1wQtcTU2z0ccEiN8j6yz-blNG2v4weVInL6uLR-4QWnulRIC7XWv4QsSrSIw2mgWHgV7YN_MGy3Yed32x1SS3Iec3o3lsgR54eMHbDfArKZTQ3jnTTF24KmVZYhBCM4kx2H0BnScs6Kay7trHhpoNdp2GCb2z5-sGNucVu_9bRfZ5ba"/>
+<span class="text-sm font-medium">Marcus Voge</span>
+</div>
+</td>
+<td class="py-6 px-4">
+<span class="text-sm text-on-surface-variant">Oct 23, 18:45</span>
+</td>
+<td class="py-6 px-8 text-right">
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity" data-icon="chevron_right">chevron_right</span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer">
+<td class="py-6 px-8">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface group-hover:text-primary transition-colors">Staging Deployment Failure</span>
+<span class="text-xs text-on-surface-variant/70 font-mono">INC-2023-438</span>
+</div>
+</td>
+<td class="py-6 px-4">
+<span class="px-3 py-1 rounded-full bg-surface-container-highest text-on-surface-variant text-[10px] font-black tracking-tighter">SEV4</span>
+</td>
+<td class="py-6 px-4">
+<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold flex items-center gap-1.5 w-fit">
+                                        postmortem
+                                    </span>
+</td>
+<td class="py-6 px-4">
+<div class="flex items-center gap-2">
+<img alt="Commander profile" class="w-6 h-6 rounded-full" data-alt="calm woman in a minimalist studio apartment, morning light, very organized and peaceful atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCN43S30rCBJ5zGVwWZCMMyRTdCmoVFyr6g-OYydBHwAFVcQ-cacFRZBjgx0U1CMIXZeKv3nSUJLhKyn-RdR38LGoxgLisLC8wACE0qvYsTkbmF7DEotMjtAuqjaBzQJlOdbcayZHUluKysBtglkKJLzRlzEOrIH7ovH45HNBQwy7xv7uhI5WbKioISwGk8r_WwgTMYwrWr3dl4uNlzHwYT_-b3YO8JbNJkmf5qCeDZs0-WoZ0jUPei0p-G5j57pD2GgT-ZgkIRpXBq"/>
+<span class="text-sm font-medium">Elena Rossi</span>
+</div>
+</td>
+<td class="py-6 px-4">
+<span class="text-sm text-on-surface-variant">Oct 23, 12:30</span>
+</td>
+<td class="py-6 px-8 text-right">
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity" data-icon="chevron_right">chevron_right</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="py-6 px-8 bg-surface-container-low/30 flex items-center justify-between border-t border-surface-container">
+<p class="text-sm text-on-surface-variant">
+                        Showing <span class="font-bold text-on-surface">1</span> to <span class="font-bold text-on-surface">4</span> of <span class="font-bold text-on-surface">48</span> incidents
+                    </p>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="first_page">first_page</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg bg-primary text-white font-bold text-xs">1</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container-high text-on-surface text-xs">2</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container-high text-on-surface text-xs">3</button>
+<span class="px-1 text-on-surface-variant">...</span>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container-high text-on-surface text-xs">12</button>
+</div>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="last_page">last_page</span>
+</button>
+</div>
+</div>
+</div>
+<!-- AI Insight Overlap (Editorial Element) -->
+<div class="mt-12 bg-surface-container-highest p-8 rounded-[2rem] relative overflow-hidden flex flex-col md:flex-row items-center gap-8 border border-white/40">
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="relative z-10 flex-1">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-xs font-black uppercase tracking-widest text-primary">Sentinel AI Insight</span>
+</div>
+<h3 class="text-2xl font-bold mb-3 tracking-tight">Latency trends are rising in US-EAST-2.</h3>
+<p class="text-on-surface-variant leading-relaxed">Our models predict a 65% probability of a new incident related to the <span class="font-bold text-on-surface">Payment API</span> within the next 4 hours based on recent cache eviction patterns. Recommended action: Scalability check on cluster-b.</p>
+</div>
+<button class="relative z-10 bg-white text-primary px-6 py-3 rounded-xl font-bold shadow-sm hover:shadow-md transition-all">
+                    View Analysis
+                </button>
+</div>
+</div>
+</main>
+<!-- FAB Suppression: On List View, we often keep a CTA, but as per instructions, FABs are only for main dashboards. We have the "New Incident" in the sidebar anyway. -->
+</body></html>

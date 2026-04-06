@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Incident Handoff Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd1",
+                        "primary-container": "#b15f00",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#842503",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#f4ede6",
+                        "on-secondary-container": "#6a635e",
+                        "surface": "#fff8f2",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#eae1da",
+                        "surface-tint": "#904d00",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary-container": "#c2512d",
+                        "surface-variant": "#e8e1db",
+                        "inverse-primary": "#ffb77d",
+                        "on-tertiary-fixed": "#3a0a00",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#f7efe9",
+                        "on-primary-fixed": "#2f1500",
+                        "background": "#fff8f2",
+                        "secondary-fixed": "#eae1da",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#faf2eb",
+                        "inverse-surface": "#33302c",
+                        "on-surface": "#1e1b17",
+                        "primary-fixed": "#ffdcc3",
+                        "on-background": "#1e1b17",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#1f1b17",
+                        "surface-dim": "#e0d9d2",
+                        "surface-container-highest": "#e8e1db",
+                        "tertiary-fixed-dim": "#ffb59f",
+                        "on-surface-variant": "#554336",
+                        "primary": "#8d4b00",
+                        "outline-variant": "#dbc2b0",
+                        "primary-fixed-dim": "#ffb77d",
+                        "on-secondary-fixed-variant": "#4b4641",
+                        "on-error": "#ffffff",
+                        "secondary": "#645d58",
+                        "tertiary": "#a23917",
+                        "secondary-fixed-dim": "#cec5bf",
+                        "surface-container-high": "#eee7e0",
+                        "outline": "#887364",
+                        "on-primary-container": "#fffbff",
+                        "surface-bright": "#fff8f2",
+                        "on-primary-fixed-variant": "#6e3900"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .btn-primary-gradient {
+            background: linear-gradient(135deg, #8d4b00 0%, #b15f00 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-6 h-screen w-64 bg-[#faf2eb] dark:bg-stone-900 contrast-none z-50">
+<div class="px-6 mb-10 flex flex-col gap-1">
+<h1 class="text-xl font-bold text-[#1e1b17] dark:text-stone-100 font-manrope">Incident Handoff</h1>
+<p class="text-xs uppercase tracking-widest text-on-surface-variant/70 font-label">The Serene Sentinel</p>
+</div>
+<nav class="flex-1 flex flex-col px-3 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#8d4b00] dark:text-amber-500 border-r-4 border-[#8d4b00] dark:border-amber-500 bg-[#e8e1db] dark:bg-stone-800 transition-all duration-300 scale-95 active:duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-sm text-[#645d58] dark:text-stone-400 hover:bg-[#e8e1db] dark:hover:bg-stone-800 hover:text-[#1e1b17] dark:hover:text-stone-200 transition-colors duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="font-label">Incidents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-sm text-[#645d58] dark:text-stone-400 hover:bg-[#e8e1db] dark:hover:bg-stone-800 hover:text-[#1e1b17] dark:hover:text-stone-200 transition-colors duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-label">Admin</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-sm text-[#645d58] dark:text-stone-400 hover:bg-[#e8e1db] dark:hover:bg-stone-800 hover:text-[#1e1b17] dark:hover:text-stone-200 transition-colors duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full btn-primary-gradient text-white py-3 rounded-lg font-bold text-sm shadow-sm flex items-center justify-center gap-2 transition-transform hover:scale-[1.02] active:scale-95">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                New Incident
+            </button>
+<div class="mt-8 flex items-center gap-3 px-1">
+<img alt="User profile photo" class="w-10 h-10 rounded-full object-cover" data-alt="Close-up portrait of a professional man with a friendly expression in a modern office environment with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAk-_2bcIud8AqEBnpRmrnzWPvzsTTcwVKbio0_Vvn6ThGMoow-ENkXsFTYxzoPkcguWr2YPHqW1i8xuH67S3-wZLNlWDzonOsrB_3HrzguSyvPKzJVwVGH9-S6ZpzlXfTJf_4d5bSfahZl9jNkonauF8prZl_Giv5i6zFwc61imUZ516TLmGf-M8QJrklWLQuCuwOnv3FslihPQZWm4sbIzjI9lZGwXQ0Xqfm-LEfBk-Ulq1j77_R0sDCflI8aAZuNiSrv7JjmwfnB"/>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-on-surface">Alex Rivera</span>
+<span class="text-xs text-on-surface-variant">Lead SRE</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-8 h-16 sticky top-0 z-40 bg-[#fff8f2]/80 dark:bg-stone-950/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-8">
+<span class="hidden md:block text-xl font-black text-[#1e1b17] dark:text-stone-100 font-manrope">Timeline</span>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-sm text-[#8d4b00] dark:text-amber-500 border-b-2 border-[#8d4b00] pb-1 font-medium transition-all" href="#">Timeline</a>
+<a class="text-sm text-[#645d58] dark:text-stone-400 hover:text-[#8d4b00] dark:hover:text-amber-400 transition-all" href="#">Attachments</a>
+<a class="text-sm text-[#645d58] dark:text-stone-400 hover:text-[#8d4b00] dark:hover:text-amber-400 transition-all" href="#">AI Summary</a>
+<a class="text-sm text-[#645d58] dark:text-stone-400 hover:text-[#8d4b00] dark:hover:text-amber-400 transition-all" href="#">Comments</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-primary/20" placeholder="Search incidents..." type="text"/>
+</div>
+<div class="flex gap-3">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+</div>
+</header>
+<section class="p-8 max-w-7xl mx-auto space-y-8">
+<!-- Hero Heading -->
+<div class="space-y-1">
+<h2 class="text-4xl font-extrabold font-manrope tracking-tight text-on-surface">Systems Overview</h2>
+<p class="text-on-surface-variant font-medium">Real-time status of current active incidents and platform health.</p>
+</div>
+<!-- Bento Grid - Severity Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-highest p-6 rounded-xl relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-xs font-bold uppercase tracking-widest text-tertiary mb-1 font-label">Critical Priority</p>
+<h3 class="text-5xl font-extrabold font-manrope text-on-surface">2</h3>
+<p class="text-sm font-medium text-on-surface-variant mt-2">Active SEV1 Incidents</p>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-[120px]" data-icon="warning">warning</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+<p class="text-xs font-bold uppercase tracking-widest text-primary mb-1 font-label">High Priority</p>
+<h3 class="text-5xl font-extrabold font-manrope text-on-surface">5</h3>
+<p class="text-sm font-medium text-on-surface-variant mt-2">Active SEV2 Incidents</p>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+<p class="text-xs font-bold uppercase tracking-widest text-secondary mb-1 font-label">Medium Priority</p>
+<h3 class="text-5xl font-extrabold font-manrope text-on-surface">12</h3>
+<p class="text-sm font-medium text-on-surface-variant mt-2">Active SEV3 Incidents</p>
+</div>
+</div>
+<!-- Analytics Row -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- MTTR Chart Card -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm space-y-6">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-lg font-bold font-manrope text-on-surface">MTTR Trend</h4>
+<p class="text-sm text-on-surface-variant">Mean Time To Resolution (Last 30 Days)</p>
+</div>
+<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="trending_down">trending_down</span>
+                            14% Improvement
+                        </span>
+</div>
+<!-- Custom SVG Line Chart -->
+<div class="h-48 w-full relative">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 400 100">
+<path d="M0,80 Q50,70 100,75 T200,45 T300,50 T400,20" fill="none" stroke="#8d4b00" stroke-linecap="round" stroke-width="3"></path>
+<path d="M0,80 Q50,70 100,75 T200,45 T300,50 T400,20 V100 H0 Z" fill="url(#amber-gradient)" opacity="0.1"></path>
+<defs>
+<lineargradient id="amber-gradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#8d4b00"></stop>
+<stop offset="100%" stop-color="#8d4b00" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute bottom-0 w-full flex justify-between text-[10px] text-outline font-label pt-2">
+<span>Wk 1</span><span>Wk 2</span><span>Wk 3</span><span>Wk 4</span>
+</div>
+</div>
+</div>
+<!-- AI Acceptance Rate Card -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm space-y-6">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-lg font-bold font-manrope text-on-surface">AI Summary Acceptance</h4>
+<p class="text-sm text-on-surface-variant">User validation rate for automated handoffs</p>
+</div>
+<span class="text-2xl font-black text-primary font-manrope">88.4%</span>
+</div>
+<!-- Custom Bar Chart UI -->
+<div class="space-y-4 pt-4">
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold text-on-surface-variant font-label">
+<span>ACCEPTED AS IS</span>
+<span>65%</span>
+</div>
+<div class="h-2.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 65%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold text-on-surface-variant font-label">
+<span>ACCEPTED WITH EDITS</span>
+<span>23.4%</span>
+</div>
+<div class="h-2.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 23.4%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold text-on-surface-variant font-label">
+<span>REJECTED</span>
+<span>11.6%</span>
+</div>
+<div class="h-2.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container rounded-full" style="width: 11.6%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Urgent Incidents Table-like List -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/10">
+<div class="p-6 border-b border-surface-container flex justify-between items-center bg-surface-container-low/30">
+<h4 class="font-bold font-manrope text-on-surface">Urgent Incidents Focus</h4>
+<button class="text-primary text-sm font-bold hover:underline">View All Active</button>
+</div>
+<div class="divide-y divide-surface-container">
+<!-- Incident Item 1 -->
+<div class="p-6 hover:bg-surface-container-low transition-colors flex items-center gap-6 group">
+<div class="flex flex-col items-center justify-center min-w-[64px]">
+<span class="text-[10px] font-black uppercase text-tertiary font-label">SEV1</span>
+<div class="w-1.5 h-10 bg-tertiary rounded-full my-1"></div>
+<span class="text-[10px] font-bold text-on-surface-variant">ACTIVE</span>
+</div>
+<div class="flex-1 space-y-1">
+<div class="flex items-center gap-2">
+<h5 class="text-base font-bold text-on-surface group-hover:text-primary transition-colors">Checkout API Latency Spike - US-EAST-1</h5>
+<span class="bg-surface-container-highest px-2 py-0.5 rounded text-[10px] font-bold text-on-surface-variant uppercase">Payment</span>
+</div>
+<p class="text-sm text-on-surface-variant line-clamp-1">Redis cluster reporting 95% CPU utilization. Traffic failing over to secondary region.</p>
+<div class="flex items-center gap-4 pt-1">
+<div class="flex items-center gap-1 text-xs text-outline font-medium">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span>Started 14m ago</span>
+</div>
+<div class="flex items-center gap-1 text-xs text-outline font-medium">
+<span class="material-symbols-outlined text-sm" data-icon="person">person</span>
+<span>Owner: Sarah Chen</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg shadow-sm">Join Bridge</button>
+<button class="px-3 py-2 bg-secondary-container text-on-secondary-container text-xs font-bold rounded-lg">Details</button>
+</div>
+</div>
+<!-- Incident Item 2 -->
+<div class="p-6 hover:bg-surface-container-low transition-colors flex items-center gap-6 group">
+<div class="flex flex-col items-center justify-center min-w-[64px]">
+<span class="text-[10px] font-black uppercase text-primary font-label">SEV2</span>
+<div class="w-1.5 h-10 bg-primary rounded-full my-1"></div>
+<span class="text-[10px] font-bold text-on-surface-variant">INVESTIGATING</span>
+</div>
+<div class="flex-1 space-y-1">
+<div class="flex items-center gap-2">
+<h5 class="text-base font-bold text-on-surface group-hover:text-primary transition-colors">Partial Outage: Image Transformation Service</h5>
+<span class="bg-surface-container-highest px-2 py-0.5 rounded text-[10px] font-bold text-on-surface-variant uppercase">Media</span>
+</div>
+<p class="text-sm text-on-surface-variant line-clamp-1">Thumbnails failing to generate for new product listings. S3 bucket permission mismatch suspected.</p>
+<div class="flex items-center gap-4 pt-1">
+<div class="flex items-center gap-1 text-xs text-outline font-medium">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span>Started 1h 05m ago</span>
+</div>
+<div class="flex items-center gap-1 text-xs text-outline font-medium">
+<span class="material-symbols-outlined text-sm" data-icon="person">person</span>
+<span>Owner: Marcus Vane</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg shadow-sm">Join Bridge</button>
+<button class="px-3 py-2 bg-secondary-container text-on-secondary-container text-xs font-bold rounded-lg">Details</button>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Insight Overlapping Card -->
+<div class="relative pt-8">
+<div class="bg-surface-container-highest p-8 rounded-2xl border-l-8 border-primary flex flex-col md:flex-row gap-8 items-center shadow-lg transform md:-translate-x-4">
+<div class="bg-primary/10 p-4 rounded-full">
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="flex-1 space-y-2">
+<h4 class="text-xl font-extrabold font-manrope text-on-surface">Predictive Handoff Insight</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">
+                            Based on your recent <span class="text-primary font-bold">SEV1</span> activity, we noticed a pattern in <span class="font-bold">Redis failover delays</span>. 
+                            AI suggests updating the "Persistence Config" documentation before the next shift rotation to reduce handoff friction by an estimated <span class="text-primary font-bold">12 minutes</span>.
+                        </p>
+</div>
+<button class="btn-primary-gradient px-6 py-3 rounded-xl text-white font-bold text-sm whitespace-nowrap shadow-md">Review Suggestion</button>
+</div>
+</div>
+</section>
+</main>
+</body></html>

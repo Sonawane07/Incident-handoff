@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Incident Workspace - API Latency Spike</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd1",
+                        "primary-container": "#b15f00",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#842503",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#f4ede6",
+                        "on-secondary-container": "#6a635e",
+                        "surface": "#fff8f2",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#eae1da",
+                        "surface-tint": "#904d00",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary-container": "#c2512d",
+                        "surface-variant": "#e8e1db",
+                        "inverse-primary": "#ffb77d",
+                        "on-tertiary-fixed": "#3a0a00",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#f7efe9",
+                        "on-primary-fixed": "#2f1500",
+                        "background": "#fff8f2",
+                        "secondary-fixed": "#eae1da",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#faf2eb",
+                        "inverse-surface": "#33302c",
+                        "on-surface": "#1e1b17",
+                        "primary-fixed": "#ffdcc3",
+                        "on-background": "#1e1b17",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#1f1b17",
+                        "surface-dim": "#e0d9d2",
+                        "surface-container-highest": "#e8e1db",
+                        "tertiary-fixed-dim": "#ffb59f",
+                        "on-surface-variant": "#554336",
+                        "primary": "#8d4b00",
+                        "outline-variant": "#dbc2b0",
+                        "primary-fixed-dim": "#ffb77d",
+                        "on-secondary-fixed-variant": "#4b4641",
+                        "on-error": "#ffffff",
+                        "secondary": "#645d58",
+                        "tertiary": "#a23917",
+                        "secondary-fixed-dim": "#cec5bf",
+                        "surface-container-high": "#eee7e0",
+                        "outline": "#887364",
+                        "on-primary-container": "#fffbff",
+                        "surface-bright": "#fff8f2",
+                        "on-primary-fixed-variant": "#6e3900"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-6 bg-[#faf2eb] dark:bg-stone-900 w-64 z-50">
+<div class="px-6 mb-10">
+<h1 class="text-xl font-bold text-[#1e1b17] dark:text-stone-100 font-manrope">Incident Handoff</h1>
+<p class="text-xs text-on-surface-variant/70 uppercase tracking-widest mt-1">The Serene Sentinel</p>
+</div>
+<nav class="flex-1 space-y-1 px-4">
+<a class="flex items-center gap-3 px-3 py-2 text-[#645d58] dark:text-stone-400 hover:text-[#1e1b17] dark:hover:text-stone-200 hover:bg-[#e8e1db] dark:hover:bg-stone-800 transition-colors duration-300 ease-in-out rounded-lg scale-95 active:duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-inter tracking-wider">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#8d4b00] dark:text-amber-500 font-bold border-r-4 border-[#8d4b00] dark:border-amber-500 bg-[#e8e1db] dark:bg-stone-800 transition-colors duration-300 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="text-sm font-inter tracking-wider">Incidents</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#645d58] dark:text-stone-400 hover:text-[#1e1b17] dark:hover:text-stone-200 hover:bg-[#e8e1db] dark:hover:bg-stone-800 transition-colors duration-300 ease-in-out rounded-lg scale-95 active:duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="text-sm font-inter tracking-wider">Admin</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#645d58] dark:text-stone-400 hover:text-[#1e1b17] dark:hover:text-stone-200 hover:bg-[#e8e1db] dark:hover:bg-stone-800 transition-colors duration-300 ease-in-out rounded-lg scale-95 active:duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm font-inter tracking-wider">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full flex items-center justify-center gap-2 bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-xl font-bold transition-all hover:shadow-lg active:scale-95">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+<span>New Incident</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- TopNavBar Shell -->
+<header class="sticky top-0 z-40 bg-[#fff8f2]/80 dark:bg-stone-950/80 backdrop-blur-md flex justify-between items-center w-full px-8 h-16 shadow-sm dark:shadow-none">
+<div class="flex items-center gap-8">
+<span class="text-[#8d4b00] font-manrope font-bold text-lg tracking-tight">Timeline</span>
+<span class="text-[#645d58] font-manrope text-lg tracking-tight hover:text-[#8d4b00] transition-all cursor-pointer">Attachments</span>
+<span class="text-[#8d4b00] font-manrope font-bold text-lg tracking-tight border-b-2 border-[#8d4b00] pb-1">AI Summary</span>
+<span class="text-[#645d58] font-manrope text-lg tracking-tight hover:text-[#8d4b00] transition-all cursor-pointer">Comments</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary w-64 outline-none" placeholder="Search signals..." type="text"/>
+</div>
+<div class="flex items-center gap-4 text-[#645d58]">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="help_outline">help_outline</span>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-outline-variant/30" data-alt="Close-up portrait of a professional man in a beige linen shirt with warm ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfeQhwyvygAej_iI19ecSzhofKfJJokzEzM-w7C298QJwqoxa2YR3_4aNNYWRtv9nMVqVdYZfUbAV-P5wpFTx0F-K9t8gjGOq41Lsxurb1X3bCMh8ye2JbAX948x0RPDAiqCNSCR_MlBYlmpKDif5-a4xe6iQenI0IGFEjgqZMUQ1qskQMqERs_gsiaABfSUJwsBic9t7OBFDiHPAzmdD2Z6whuiASfprOC7pP3_kaU44YQ1oZ-v-F6iN6Ra8Yhnh6HlL_urv5q96r"/>
+</div>
+</div>
+</header>
+<div class="p-8 max-w-[1400px] mx-auto">
+<!-- Page Header / Incident Identifier -->
+<section class="mb-10">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="bg-tertiary text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-widest uppercase">SEV2</span>
+<span class="flex items-center gap-1.5 bg-primary-fixed text-on-primary-fixed-variant text-xs font-semibold px-3 py-1 rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                mitigating
+                            </span>
+</div>
+<h2 class="text-4xl font-extrabold text-on-surface tracking-tight leading-tight">API latency spike in us-east-1</h2>
+<p class="text-on-surface-variant mt-2 font-medium">INC-402 • Triggered 42 mins ago by Cloudwatch Alarms</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 bg-surface-container-high hover:bg-surface-container-highest px-5 py-2.5 rounded-xl text-on-surface font-semibold transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="edit_note">edit_note</span>
+                            Change Status
+                            <span class="material-symbols-outlined text-lg" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-12 gap-8">
+<!-- Main Content Column -->
+<div class="col-span-12 lg:col-span-8 space-y-8">
+<!-- AI Summary Section -->
+<div class="bg-surface-container-highest rounded-2xl p-8 relative overflow-hidden shadow-sm">
+<!-- Glassy Backdrop Effect -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -mr-32 -mt-32"></div>
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white shadow-md">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div>
+<h3 class="text-xl font-bold text-on-surface">Intelligence Summary</h3>
+<p class="text-sm text-on-surface-variant font-medium">AI-generated overview of the incident state</p>
+</div>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all hover:scale-[1.02] active:scale-95">
+                                    Generate Summary
+                                </button>
+</div>
+<div class="space-y-8">
+<div>
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-[0.15em] mb-4">Timeline Narrative</h4>
+<ul class="space-y-4">
+<li class="flex gap-4">
+<span class="text-primary font-bold text-sm whitespace-nowrap pt-0.5">14:02</span>
+<p class="text-on-surface leading-relaxed">Alert triggered: `p99` latency exceeded 500ms for `api-gateway` in us-east-1.</p>
+</li>
+<li class="flex gap-4">
+<span class="text-primary font-bold text-sm whitespace-nowrap pt-0.5">14:15</span>
+<p class="text-on-surface leading-relaxed">Identified surge in traffic from specific IP block (AS15169). Rate limiting applied to mitigate database contention.</p>
+</li>
+<li class="flex gap-4">
+<span class="text-primary font-bold text-sm whitespace-nowrap pt-0.5">14:38</span>
+<p class="text-on-surface leading-relaxed">Latency returning to baseline (120ms). Monitoring auto-scaling group warm-up progress.</p>
+</li>
+</ul>
+</div>
+<div>
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-[0.15em] mb-4">Next Steps</h4>
+<div class="space-y-3">
+<label class="flex items-start gap-3 p-4 bg-surface-container-low rounded-xl border border-outline-variant/10 cursor-pointer hover:bg-surface-container-high transition-colors">
+<input checked="" class="mt-1 rounded text-primary focus:ring-primary border-outline" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface">Finalize post-mortem documentation for stakeholder review.</span>
+</label>
+<label class="flex items-start gap-3 p-4 bg-surface-container-low rounded-xl border border-outline-variant/10 cursor-pointer hover:bg-surface-container-high transition-colors">
+<input class="mt-1 rounded text-primary focus:ring-primary border-outline" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface">Rotate API keys for suspected compromised ingress point.</span>
+</label>
+<label class="flex items-start gap-3 p-4 bg-surface-container-low rounded-xl border border-outline-variant/10 cursor-pointer hover:bg-surface-container-high transition-colors">
+<input class="mt-1 rounded text-primary focus:ring-primary border-outline" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface">Schedule retrospective with the database reliability team.</span>
+</label>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 mt-10 pt-8 border-t border-outline-variant/20">
+<button class="bg-primary text-white px-6 py-2 rounded-lg font-bold text-sm hover:opacity-90 transition-opacity">Approve</button>
+<button class="bg-secondary-container text-on-secondary-container px-6 py-2 rounded-lg font-bold text-sm hover:bg-surface-container-high transition-all">Edit</button>
+<button class="text-tertiary px-6 py-2 rounded-lg font-bold text-sm hover:bg-tertiary/5 transition-all">Discard</button>
+</div>
+</div>
+</div>
+<!-- Asymmetric Info Card -->
+<div class="grid grid-cols-2 gap-6">
+<div class="bg-surface-container-low rounded-2xl p-6">
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-4">Critical Signals</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-sm font-medium">DB Connection Pool</span>
+<span class="text-sm font-bold text-tertiary">94% Capacity</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full" style="width: 94%"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm font-medium">Avg Request Latency</span>
+<span class="text-sm font-bold text-primary">480ms</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 65%"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container rounded-2xl p-6 flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3" data-icon="hub">hub</span>
+<p class="text-sm font-medium text-on-surface-variant leading-relaxed">Visualizing topology for <br/> affected clusters...</p>
+<button class="mt-4 text-xs font-bold text-primary hover:underline">Open Mesh Map</button>
+</div>
+</div>
+</div>
+<!-- Sidebar Column -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<!-- Team / Responders -->
+<div class="bg-surface-container-high rounded-2xl p-6 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold text-on-surface">Response Team</h3>
+<span class="text-xs font-bold bg-surface-container-highest px-2 py-1 rounded text-on-surface-variant">3 Active</span>
+</div>
+<div class="space-y-5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Alex Rivera" class="w-11 h-11 rounded-full border-2 border-primary" data-alt="Professional man with short hair in a light brown blazer smiling warmly at the camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7EaCwYb-MLTYY0ZSXb292QM6pMA4WB8fJrL69-19CcJvrVbGQjQ_tcRcLJG4n6JtDDEuYsfAXIA5fQJQhmJjbEYwgUubjIJEf5gSUgYfekxBWrWX5yil5FcIXU47TWGYPOe0WrpADwBXq7fTnVzFwmKf3NaqD3852cCy_qXGPo8yMTDUG0q_3rW1ZZ2d9_1paEJgXPqdDuaRl8f_OT1boONncUZSCawVYYZl3JYI7lp_yd_nrzlnxlfocSl5ailyKQ-hEWGGdgjkf"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-surface-container-high rounded-full"></span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Alex Rivera</p>
+<p class="text-[10px] text-primary uppercase font-bold tracking-tighter">Incident Commander</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary" data-icon="chat">chat</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Sarah Chen" class="w-11 h-11 rounded-full" data-alt="Portrait of a young woman with dark hair wearing a beige knit sweater looking calm and focused" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLhn7FULLY8MhyiHuItG3YPgPqn7fhm-iQs-TsM1RsLtZbtLmdR74DJUoY0Bxfk9A9Wh0lB1GfFQ15V3kqrQaZcP9XXZXjBYl8gdXb4DwKZRHvVoO5z5HkA-jl1bu5FODvHY3lEvP_vik8JXM9TAE43dpUTOgD36yMT90rVczmUrffL8gil9DI-CAuwExO64iug_bkQux9Nd81SJ7773bjg-mVZGUaednTfv7sl6p5Kz8sk8o8nCkPR7TAtbY6ygaGyvmb7MDchZ9D"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-surface-container-high rounded-full"></span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Sarah Chen</p>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter">On-Call Engineer</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary" data-icon="chat">chat</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Marcus Thorne" class="w-11 h-11 rounded-full" data-alt="Close-up of a stylish man with glasses in a minimalist architectural setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS85E6tGGo-gaqzZnLBoNMioX5O9zWnGJ7thxfPrGen9JxjaemTNCCnx1p3YRSikbnL46HwLhseZuawch0QH5jtValO2XkeV1uw-5EujLud3iBsWqPwch2bgyqnkwEBGYZ9bz4Ftfl02kWq-vuNc7NK-KqbaLW76D9CJrejbX1WVl83sQFY7EBMmXZhCKPIMINldDtFGddsrYFIlSy_9dLOqlBhJCPftu_k47Cy-3qTqzZ9wQH0lP53DDDlF2aHNs8MTI-0wZNrOhF"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 bg-amber-500 border-2 border-surface-container-high rounded-full"></span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Marcus Thorne</p>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter">SRE Lead</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary" data-icon="chat">chat</span>
+</div>
+</div>
+<button class="w-full mt-8 flex items-center justify-center gap-2 border border-outline-variant/30 text-on-surface font-bold py-2.5 rounded-xl text-sm hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-base" data-icon="person_add">person_add</span>
+                            Add Member
+                        </button>
+</div>
+<!-- Activity Log (Sidebar Variant) -->
+<div class="bg-surface-container-low rounded-2xl p-6">
+<h3 class="text-lg font-bold text-on-surface mb-6">Recent Activity</h3>
+<div class="space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-outline-variant/20">
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-4 h-4 rounded-full bg-primary-fixed flex items-center justify-center ring-4 ring-surface-container-low">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+</div>
+<p class="text-xs font-bold text-on-surface">Deployment Rolled Back</p>
+<p class="text-[11px] text-on-surface-variant mt-0.5">Alex Rivera • 4 mins ago</p>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-4 h-4 rounded-full bg-surface-container-highest flex items-center justify-center ring-4 ring-surface-container-low">
+<div class="w-1.5 h-1.5 rounded-full bg-on-surface-variant/30"></div>
+</div>
+<p class="text-xs font-bold text-on-surface">New Graph Attached</p>
+<p class="text-[11px] text-on-surface-variant mt-0.5">Sarah Chen • 12 mins ago</p>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-4 h-4 rounded-full bg-surface-container-highest flex items-center justify-center ring-4 ring-surface-container-low">
+<div class="w-1.5 h-1.5 rounded-full bg-on-surface-variant/30"></div>
+</div>
+<p class="text-xs font-bold text-on-surface">Status: Investigating → Mitigating</p>
+<p class="text-[11px] text-on-surface-variant mt-0.5">System • 15 mins ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
