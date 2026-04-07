@@ -8,9 +8,11 @@ import {
 } from '../../hooks/useAISummary';
 import { Button } from '../ui/Button';
 import { Textarea } from '../ui/Textarea';
+import { Input } from '../ui/Input';
 import { Spinner } from '../ui/Spinner';
 import { Badge } from '../ui/Badge';
 import { formatDistanceToNow } from 'date-fns';
+import type { AISummary } from '../../types';
 
 interface AISummaryTabProps {
   incidentId: string;
@@ -18,31 +20,42 @@ interface AISummaryTabProps {
 
 export const AISummaryTab: React.FC<AISummaryTabProps> = ({ incidentId }) => {
   const { data: summaries, isLoading } = useAISummaries(incidentId);
-  const generateMutation = useGenerateAISummary(incidentId);
-  const approveMutation = useApproveAISummary(incidentId);
-  const updateMutation = useUpdateAISummary(incidentId);
-  const discardMutation = useDiscardAISummary(incidentId);
+  const generateMutation = useGenerateAISummary();
+  const approveMutation = useApproveAISummary();
+  const updateMutation = useUpdateAISummary();
+  const discardMutation = useDiscardAISummary();
 
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editedNarrative, setEditedNarrative] = useState('');
-  const [editedSteps, setEditedSteps] = useState<string[]>([]);
+  const [editedSummary, setEditedSummary] = useState('');
+  const [editedRootCause, setEditedRootCause] = useState('');
+  const [editedImpact, setEditedImpact] = useState('');
+  const [editedActions, setEditedActions] = useState<string[]>([]);
+  const [editedRecommendations, setEditedRecommendations] = useState<string[]>([]);
 
   const latestSummary = summaries?.[0];
 
-  const handleEdit = (summary: typeof latestSummary) => {
-    if (!summary) return;
+  const handleEdit = (summary: AISummary) => {
     setEditingId(summary.id);
-    setEditedNarrative(summary.timeline_narrative);
-    setEditedSteps([...summary.next_steps]);
+    setEditedSummary(summary.executive_summary);
+    setEditedRootCause(summary.root_cause || '');
+    setEditedImpact(summary.impact);
+    setEditedActions([...summary.actions_taken]);
+    setEditedRecommendations([...summary.recommendations]);
   };
 
   const handleSaveEdit = async () => {
     if (!editingId) return;
     try {
       await updateMutation.mutateAsync({
-        id: editingId,
-        timeline_narrative: editedNarrative,
-        next_steps: editedSteps,
+        incidentId,
+        summaryId: editingId,
+        data: {
+          executive_summary: editedSummary,
+          root_cause: editedRootCause || null,
+          impact: editedImpact,
+          actions_taken: editedActions,
+          recommendations: editedRecommendations,
+        },
       });
       setEditingId(null);
     } catch (error) {
@@ -50,18 +63,32 @@ export const AISummaryTab: React.FC<AISummaryTabProps> = ({ incidentId }) => {
     }
   };
 
-  const handleAddStep = () => {
-    setEditedSteps([...editedSteps, '']);
+  const handleAddAction = () => {
+    setEditedActions([...editedActions, '']);
   };
 
-  const handleUpdateStep = (index: number, value: string) => {
-    const newSteps = [...editedSteps];
-    newSteps[index] = value;
-    setEditedSteps(newSteps);
+  const handleUpdateAction = (index: number, value: string) => {
+    const newActions = [...editedActions];
+    newActions[index] = value;
+    setEditedActions(newActions);
   };
 
-  const handleRemoveStep = (index: number) => {
-    setEditedSteps(editedSteps.filter((_, i) => i !== index));
+  const handleRemoveAction = (index: number) => {
+    setEditedActions(editedActions.filter((_, i) => i !== index));
+  };
+
+  const handleAddRecommendation = () => {
+    setEditedRecommendations([...editedRecommendations, '']);
+  };
+
+  const handleUpdateRecommendation = (index: number, value: string) => {
+    const newRecs = [...editedRecommendations];
+    newRecs[index] = value;
+    setEditedRecommendations(newRecs);
+  };
+
+  const handleRemoveRecommendation = (index: number) => {
+    setEditedRecommendations(editedRecommendations.filter((_, i) => i !== index));
   };
 
   if (isLoading) {
@@ -85,10 +112,10 @@ export const AISummaryTab: React.FC<AISummaryTabProps> = ({ incidentId }) => {
           </h3>
           <p className="text-on-surface-variant mt-2 max-w-2xl mx-auto">
             Generate a comprehensive summary based on timeline events, attachments, and comments.
-            The AI will analyze all available evidence and provide actionable next steps.
+            The AI will analyze all available evidence and provide actionable recommendations.
           </p>
           <Button
-            onClick={() => generateMutation.mutate()}
+            onClick={() => generateMutation.mutate(incidentId)}
             disabled={generateMutation.isPending}
             className="mt-6"
           >
@@ -113,15 +140,13 @@ export const AISummaryTab: React.FC<AISummaryTabProps> = ({ incidentId }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <h3 className="text-xl font-bold font-headline text-on-surface">
-                AI Summary (Version {latestSummary.version})
+                AI Summary
               </h3>
               <Badge
                 variant="default"
                 className={
                   latestSummary.status === 'approved'
                     ? 'bg-primary text-on-primary'
-                    : latestSummary.status === 'edited'
-                    ? 'bg-secondary text-on-secondary'
                     : 'bg-surface-container text-on-surface-variant'
                 }
               >
@@ -133,62 +158,139 @@ export const AISummaryTab: React.FC<AISummaryTabProps> = ({ incidentId }) => {
             </span>
           </div>
 
-          {/* Timeline Narrative */}
+          {/* Executive Summary */}
           <div>
             <h4 className="text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-3">
-              Timeline Narrative
+              Executive Summary
             </h4>
             {editingId === latestSummary.id ? (
               <Textarea
-                value={editedNarrative}
-                onChange={(e) => setEditedNarrative(e.target.value)}
-                rows={8}
+                value={editedSummary}
+                onChange={(e) => setEditedSummary(e.target.value)}
+                rows={4}
               />
             ) : (
-              <div className="bg-surface-container-low p-4 rounded whitespace-pre-wrap text-on-surface">
-                {latestSummary.timeline_narrative}
+              <div className="bg-surface-container-low p-4 rounded text-on-surface">
+                {latestSummary.executive_summary}
               </div>
             )}
           </div>
 
-          {/* Next Steps */}
+          {/* Root Cause */}
           <div>
             <h4 className="text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-3">
-              Recommended Next Steps
+              Root Cause
+            </h4>
+            {editingId === latestSummary.id ? (
+              <Textarea
+                value={editedRootCause}
+                onChange={(e) => setEditedRootCause(e.target.value)}
+                rows={3}
+                placeholder="Root cause (if identified)"
+              />
+            ) : (
+              <div className="bg-surface-container-low p-4 rounded text-on-surface">
+                {latestSummary.root_cause || 'Not yet identified'}
+              </div>
+            )}
+          </div>
+
+          {/* Impact */}
+          <div>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-3">
+              Impact Assessment
+            </h4>
+            {editingId === latestSummary.id ? (
+              <Textarea
+                value={editedImpact}
+                onChange={(e) => setEditedImpact(e.target.value)}
+                rows={3}
+              />
+            ) : (
+              <div className="bg-surface-container-low p-4 rounded text-on-surface">
+                {latestSummary.impact}
+              </div>
+            )}
+          </div>
+
+          {/* Actions Taken */}
+          <div>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-3">
+              Actions Taken
             </h4>
             {editingId === latestSummary.id ? (
               <div className="space-y-2">
-                {editedSteps.map((step, index) => (
+                {editedActions.map((action, index) => (
                   <div key={index} className="flex gap-2">
-                    <input
+                    <Input
                       type="text"
-                      value={step}
-                      onChange={(e) => handleUpdateStep(index, e.target.value)}
-                      className="flex-1 px-4 py-2 bg-surface-container-low border-b-2 border-outline-variant focus:border-primary focus:outline-none transition-colors rounded"
-                      placeholder={`Step ${index + 1}`}
+                      value={action}
+                      onChange={(e) => handleUpdateAction(index, e.target.value)}
+                      placeholder={`Action ${index + 1}`}
                     />
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleRemoveStep(index)}
+                      onClick={() => handleRemoveAction(index)}
                     >
                       <span className="material-symbols-outlined">delete</span>
                     </Button>
                   </div>
                 ))}
-                <Button variant="secondary" size="sm" onClick={handleAddStep}>
+                <Button variant="secondary" size="sm" onClick={handleAddAction}>
                   <span className="material-symbols-outlined text-sm">add</span>
-                  Add Step
+                  Add Action
                 </Button>
               </div>
             ) : (
               <ul className="space-y-2">
-                {latestSummary.next_steps.map((step, index) => (
+                {latestSummary.actions_taken.map((action, index) => (
+                  <li key={index} className="flex items-start gap-3 bg-surface-container-low p-3 rounded">
+                    <span className="material-symbols-outlined text-primary">check_circle</span>
+                    <span className="text-on-surface">{action}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Recommendations */}
+          <div>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-3">
+              Recommendations
+            </h4>
+            {editingId === latestSummary.id ? (
+              <div className="space-y-2">
+                {editedRecommendations.map((rec, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      type="text"
+                      value={rec}
+                      onChange={(e) => handleUpdateRecommendation(index, e.target.value)}
+                      placeholder={`Recommendation ${index + 1}`}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveRecommendation(index)}
+                    >
+                      <span className="material-symbols-outlined">delete</span>
+                    </Button>
+                  </div>
+                ))}
+                <Button variant="secondary" size="sm" onClick={handleAddRecommendation}>
+                  <span className="material-symbols-outlined text-sm">add</span>
+                  Add Recommendation
+                </Button>
+              </div>
+            ) : (
+              <ul className="space-y-2">
+                {latestSummary.recommendations.map((rec, index) => (
                   <li key={index} className="flex items-start gap-3 bg-surface-container-low p-3 rounded">
                     <span className="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-sm font-bold flex-shrink-0">
                       {index + 1}
                     </span>
-                    <span className="text-on-surface">{step}</span>
+                    <span className="text-on-surface">{rec}</span>
                   </li>
                 ))}
               </ul>
@@ -206,10 +308,10 @@ export const AISummaryTab: React.FC<AISummaryTabProps> = ({ incidentId }) => {
                   Cancel
                 </Button>
               </>
-            ) : latestSummary.status === 'draft' || latestSummary.status === 'edited' ? (
+            ) : latestSummary.status === 'pending' ? (
               <>
                 <Button
-                  onClick={() => approveMutation.mutate(latestSummary.id)}
+                  onClick={() => approveMutation.mutate({ incidentId, summaryId: latestSummary.id })}
                   disabled={approveMutation.isPending}
                 >
                   <span className="material-symbols-outlined text-sm">check_circle</span>
@@ -221,7 +323,7 @@ export const AISummaryTab: React.FC<AISummaryTabProps> = ({ incidentId }) => {
                 </Button>
                 <Button
                   variant="tertiary"
-                  onClick={() => discardMutation.mutate(latestSummary.id)}
+                  onClick={() => discardMutation.mutate({ incidentId, summaryId: latestSummary.id })}
                   disabled={discardMutation.isPending}
                 >
                   <span className="material-symbols-outlined text-sm">delete</span>
@@ -229,7 +331,7 @@ export const AISummaryTab: React.FC<AISummaryTabProps> = ({ incidentId }) => {
                 </Button>
               </>
             ) : (
-              <Button variant="secondary" onClick={() => generateMutation.mutate()}>
+              <Button variant="secondary" onClick={() => generateMutation.mutate(incidentId)}>
                 <span className="material-symbols-outlined text-sm">refresh</span>
                 Generate New Version
               </Button>
@@ -251,9 +353,6 @@ export const AISummaryTab: React.FC<AISummaryTabProps> = ({ incidentId }) => {
                 className="flex items-center justify-between p-3 bg-surface-container-lowest rounded hover:bg-surface-container transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-on-surface">
-                    Version {summary.version}
-                  </span>
                   <Badge variant="default">{summary.status}</Badge>
                 </div>
                 <span className="text-sm text-on-surface-variant">

@@ -8,12 +8,30 @@ def test_task(message: str):
     return {"status": "success", "message": message}
 
 
-# AI Summary generation task - to be implemented in Week 2
+# AI Summary generation task
 @celery_app.task(name="app.workers.tasks.generate_ai_summary")
 def generate_ai_summary(incident_id: str):
     """Generate AI summary for an incident"""
-    # Placeholder - will be implemented in Week 2
-    pass
+    from ..database import SessionLocal
+    from ..services.ai_summarizer import create_ai_summary
+    
+    db = SessionLocal()
+    try:
+        summary = create_ai_summary(db, incident_id)
+        return {
+            "status": "success",
+            "summary_id": str(summary.id),
+            "incident_id": incident_id
+        }
+    except Exception as e:
+        print(f"Error generating AI summary: {str(e)}")
+        return {
+            "status": "error",
+            "error": str(e),
+            "incident_id": incident_id
+        }
+    finally:
+        db.close()
 
 
 # Webhook processing task - to be implemented in Week 3

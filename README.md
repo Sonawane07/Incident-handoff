@@ -223,8 +223,23 @@ Once the backend is running, visit:
 - Dashboard metrics (MTTR, open incidents, AI stats)
 - 13 tests passing with 70%+ coverage
 
+### ✅ Week 2 - Complete
+- [x] Frontend workspace polish (Days 11-13)
+- [x] Celery + Redis verification (Day 14)
+- [x] AI summarizer worker with OpenAI (Day 15)
+- [x] AI summary API endpoints (Day 16)
+- [x] Frontend AI Summary tab (Day 17)
+
+**Week 2 Achievements:**
+- OpenAI GPT-4 integration for incident summaries
+- Async task processing with Celery
+- 6 AI summary API endpoints
+- Evidence-based summary generation (timeline, comments, attachments)
+- Commander workflow (review, edit, approve/discard)
+- Version control and history
+- Structured output (executive summary, root cause, impact, actions, recommendations)
+
 ### 📋 Upcoming
-- Week 2: AI summaries with OpenAI (Days 11-17)
 - Week 3: Webhooks and real-time updates (Days 18-24)
 - Week 4: Testing, metrics, and deployment (Days 25-30)
 
