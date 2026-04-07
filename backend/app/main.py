@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
-from .routes import incidents, timeline, attachments, comments, ai_summary, notifications, webhooks, users
+from .routes import incidents, timeline, attachments, comments, ai_summary, notifications, webhooks, users, metrics
 
 app = FastAPI(
     title="Incident Handoff API",
@@ -32,6 +32,11 @@ app.include_router(comments.router, prefix=f"{settings.API_V1_PREFIX}/incidents"
 app.include_router(ai_summary.router, prefix=f"{settings.API_V1_PREFIX}/incidents", tags=["ai-summary"])
 app.include_router(notifications.router, prefix=f"{settings.API_V1_PREFIX}/notifications", tags=["notifications"])
 app.include_router(webhooks.router, prefix=f"{settings.API_V1_PREFIX}/webhooks", tags=["webhooks"])
+
+# Import roles router
+from .routes import roles
+app.include_router(roles.router, prefix=f"{settings.API_V1_PREFIX}/incidents", tags=["roles"])
+app.include_router(metrics.router, prefix=f"{settings.API_V1_PREFIX}/metrics", tags=["metrics"])
 
 if __name__ == "__main__":
     import uvicorn

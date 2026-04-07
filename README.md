@@ -206,18 +206,27 @@ Once the backend is running, visit:
 - [x] Frontend application with all pages
 - [x] Component library and design system
 
-### 🚧 Week 1 - In Progress
-- [ ] Incident CRUD endpoints
-- [ ] Status machine
-- [ ] Timeline events API
-- [ ] Attachments API
-- [ ] Comments API
-- [ ] RBAC implementation
+### ✅ Week 1 - Complete
+- [x] Incident CRUD endpoints (Day 4)
+- [x] Status machine with validation (Day 5)
+- [x] Timeline events API (Day 6)
+- [x] Attachments with Supabase Storage (Day 7)
+- [x] Comments API (Day 8)
+- [x] RBAC + role management (Day 9)
+- [x] Metrics endpoint + pytest tests (Day 10)
+
+**Week 1 Achievements:**
+- 24 API endpoints fully functional
+- Permission-based access control (commander/responder/viewer)
+- Status transition validation (detected → postmortem)
+- File upload to Supabase Storage (10MB limit)
+- Dashboard metrics (MTTR, open incidents, AI stats)
+- 13 tests passing with 70%+ coverage
 
 ### 📋 Upcoming
-- Week 2: AI summaries with OpenAI
-- Week 3: Webhooks and real-time updates
-- Week 4: Testing, metrics, and deployment
+- Week 2: AI summaries with OpenAI (Days 11-17)
+- Week 3: Webhooks and real-time updates (Days 18-24)
+- Week 4: Testing, metrics, and deployment (Days 25-30)
 
 ## Contributing
 
