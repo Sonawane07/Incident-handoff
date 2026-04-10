@@ -54,27 +54,27 @@ You'll see several values. Copy these THREE:
 
 ---
 
-## Step 2: Get Your OpenAI API Key
+## Step 2: Get Your Google Gemini API Key
 
-### 2.1 Create OpenAI Account
-1. Go to https://platform.openai.com/signup
-2. Sign up with your email
-3. Verify your email
+### 2.1 Go to Google AI Studio
+1. Go to https://aistudio.google.com/app/apikey
+2. Sign in with your Google account
 
-### 2.2 Add Payment Method
-1. Go to https://platform.openai.com/settings/organization/billing/overview
-2. Click **Add payment method**
-3. Add a credit/debit card
-4. Add at least $5 credit (AI summaries cost ~$0.01-0.05 each)
+### 2.2 Create API Key
+1. Click **"Get API key"** or **"Create API key"**
+2. Select **"Create API key in new project"** (or choose existing project)
+3. Your API key will be generated instantly
+4. Copy the key (starts with `AIza...`)
+5. **IMPORTANT**: Save it in a safe place (like Notepad)
 
-### 2.3 Create API Key
-1. Go to https://platform.openai.com/api-keys
-2. Click **+ Create new secret key**
-3. Give it a name: "Incident Handoff"
-4. Click **Create secret key**
-5. **IMPORTANT**: Copy the key NOW (starts with `sk-proj-...`)
-6. You won't be able to see it again!
-7. Save it in a safe place (like Notepad)
+### 2.3 Free Tier (No Credit Card Needed!)
+**Good news**: Gemini has a generous free tier:
+- 15 requests per minute
+- 1 million tokens per minute
+- 1,500 requests per day
+- **No credit card required!**
+
+This is perfect for development and testing!
 
 ---
 
@@ -171,11 +171,11 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 
 **Find this line:**
 ```
-OPENAI_API_KEY=
+GEMINI_API_KEY=
 ```
-**Replace with your OpenAI key from Step 2.3:**
+**Replace with your Gemini API key from Step 2.2:**
 ```
-OPENAI_API_KEY=sk-proj-abcdefghijklmnopqrstuvwxyz1234567890
+GEMINI_API_KEY=AIzaSyD...your-actual-gemini-key-here
 ```
 
 **Find this line:**

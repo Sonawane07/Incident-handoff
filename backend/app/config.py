@@ -26,9 +26,9 @@ class Settings(BaseSettings):
     CELERY_BROKER_URL: str = "redis://localhost:6379/0"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
     
-    # OpenAI
-    OPENAI_API_KEY: str = ""
-    OPENAI_MODEL: str = "gpt-4-turbo-preview"
+    # Google Gemini
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-1.5-pro"
     
     class Config:
         env_file = ".env"

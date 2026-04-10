@@ -1,4 +1,4 @@
-from openai import OpenAI
+import google.generativeai as genai
 from sqlalchemy.orm import Session
 from datetime import datetime
 import json
@@ -10,7 +10,8 @@ from ..models import (
     AISummary, SummaryStatus
 )
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
+# Configure Gemini
+genai.configure(api_key=settings.GEMINI_API_KEY)
 
 
 def gather_incident_evidence(db: Session, incident_id: str) -> Dict[str, Any]:
@@ -71,8 +72,8 @@ def gather_incident_evidence(db: Session, incident_id: str) -> Dict[str, Any]:
     }
 
 
-def generate_summary_with_openai(evidence: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate AI summary using OpenAI with structured JSON output."""
+def generate_summary_with_gemini(evidence: Dict[str, Any]) -> Dict[str, Any]:
+    """Generate AI summary using Google Gemini with structured JSON output."""
     
     prompt = f"""You are an incident management assistant. Analyze the following incident data and generate a comprehensive summary.
 
@@ -95,10 +96,10 @@ Attachments ({len(evidence['attachments'])} files):
 
 Generate a structured summary with the following sections:
 1. Executive Summary (2-3 sentences)
-2. Root Cause (if identifiable)
+2. Root Cause (if identifiable, otherwise null)
 3. Impact Assessment
-4. Actions Taken (bullet points)
-5. Recommendations (bullet points)
+4. Actions Taken (array of bullet points)
+5. Recommendations (array of bullet points)
 
 Respond ONLY with valid JSON matching this exact structure:
 {{
@@ -107,27 +108,39 @@ Respond ONLY with valid JSON matching this exact structure:
   "impact": "string",
   "actions_taken": ["string", "string", ...],
   "recommendations": ["string", "string", ...]
-}}"""
+}}
+
+Do not include any text before or after the JSON. Only output valid JSON."""
 
     try:
-        response = client.chat.completions.create(
-            model=settings.OPENAI_MODEL,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are an expert incident management assistant. Always respond with valid JSON only."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            temperature=0.7,
-            max_tokens=1500,
-            response_format={"type": "json_object"}
+        # Initialize Gemini model
+        model = genai.GenerativeModel(
+            model_name=settings.GEMINI_MODEL,
+            generation_config={
+                "temperature": 0.7,
+                "top_p": 0.95,
+                "top_k": 40,
+                "max_output_tokens": 2048,
+            }
         )
         
-        content = response.choices[0].message.content
+        # Generate content
+        response = model.generate_content(prompt)
+        
+        # Extract text from response
+        content = response.text.strip()
+        
+        # Remove markdown code blocks if present
+        if content.startswith("```json"):
+            content = content[7:]  # Remove ```json
+        if content.startswith("```"):
+            content = content[3:]  # Remove ```
+        if content.endswith("```"):
+            content = content[:-3]  # Remove trailing ```
+        
+        content = content.strip()
+        
+        # Parse JSON
         summary_data = json.loads(content)
         
         # Validate structure
@@ -136,10 +149,18 @@ Respond ONLY with valid JSON matching this exact structure:
             if key not in summary_data:
                 raise ValueError(f"Missing required key: {key}")
         
+        # Ensure arrays are arrays
+        if not isinstance(summary_data["actions_taken"], list):
+            summary_data["actions_taken"] = [str(summary_data["actions_taken"])]
+        if not isinstance(summary_data["recommendations"], list):
+            summary_data["recommendations"] = [str(summary_data["recommendations"])]
+        
         return summary_data
     
+    except json.JSONDecodeError as e:
+        raise Exception(f"Failed to parse Gemini response as JSON: {str(e)}")
     except Exception as e:
-        raise Exception(f"OpenAI API error: {str(e)}")
+        raise Exception(f"Gemini API error: {str(e)}")
 
 
 def create_ai_summary(db: Session, incident_id: str) -> AISummary:
@@ -148,8 +169,8 @@ def create_ai_summary(db: Session, incident_id: str) -> AISummary:
     # Gather evidence
     evidence = gather_incident_evidence(db, incident_id)
     
-    # Generate summary with OpenAI
-    summary_data = generate_summary_with_openai(evidence)
+    # Generate summary with Gemini
+    summary_data = generate_summary_with_gemini(evidence)
     
     # Create AISummary record
     ai_summary = AISummary(

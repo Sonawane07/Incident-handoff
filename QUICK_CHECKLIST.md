@@ -23,18 +23,15 @@ Print this or keep it open while you set up!
 
 ---
 
-## ☐ Step 2: OpenAI Setup (5 minutes)
+## ☐ Step 2: Google Gemini Setup (2 minutes)
 
-- [ ] Go to https://platform.openai.com/signup
-- [ ] Sign up and verify email
-- [ ] Go to https://platform.openai.com/settings/organization/billing/overview
-- [ ] Add payment method
-- [ ] Add $5+ credit
-- [ ] Go to https://platform.openai.com/api-keys
-- [ ] Click **+ Create new secret key**
-- [ ] Name it: "Incident Handoff"
-- [ ] Copy the key (starts with `sk-proj-...`)
+- [ ] Go to https://aistudio.google.com/app/apikey
+- [ ] Sign in with Google account
+- [ ] Click **"Get API key"** or **"Create API key"**
+- [ ] Select **"Create API key in new project"**
+- [ ] Copy the key (starts with `AIza...`)
 - [ ] Save it somewhere safe!
+- [ ] **Note**: No credit card needed! Free tier included.
 
 **✅ Done? Move to Step 3**
 
@@ -245,8 +242,8 @@ docker-compose restart frontend
 ```
 
 ### AI summary fails?
-- Check OpenAI API key in `backend/.env`
-- Check credits: https://platform.openai.com/usage
+- Check Gemini API key in `backend/.env`
+- Verify key: https://aistudio.google.com/app/apikey
 - Check logs: `docker-compose logs celery_worker`
 
 ### Login fails?
